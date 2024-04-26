@@ -1,0 +1,130 @@
+{% block body %}
+{% include 'productnavbar.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{{ product.name }}</title>
+    <link href="{% static 'css/product_description.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        /* product_description.css */
+
+.container {
+    margin-left: 5px; /* Adjust margin-left if needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+}
+
+.product-details {
+    margin-bottom: 30px; /* Increase margin at the bottom */
+}
+
+.product-info {
+    padding: 200px; /* Add padding to product info */
+    background-color: #f4f4f4; /* Change background color */
+    text-align: center; /* Center text */
+}
+
+.product-info h1 {
+    color: #333; /* Change heading color */
+}
+
+.platforms {
+    margin-top: 20px; /* Add margin at the top */
+}
+
+.platform-product {
+    display: flex; /* Use flexbox for layout */
+    margin-bottom: 20px; /* Add margin at the bottom */
+    border: 1px solid #ccc; /* Add border */
+    border-radius: 5px; /* Add border radius */
+    overflow: hidden; /* Hide overflow content */
+}
+
+.platform-details {
+    flex-grow: 1; /* Allow details to grow */
+    padding: 10px; /* Add padding */
+}
+
+.platform-details h3 {
+    color: #007bff; /* Change platform name color */
+}
+
+.platform-details p {
+    margin: 5px 0; /* Add margin */
+}
+
+.prev-products {
+    margin-top: 30px; /* Add margin at the top */
+}
+
+.prev-product {
+    background-color: #f9f9f9; /* Change background color */
+    padding: 10px; /* Add padding */
+    margin-bottom: 10px; /* Add margin at the bottom */
+    border: 1px solid #ddd; /* Add border */
+    border-radius: 5px; /* Add border radius */
+}
+
+.prev-product h3 {
+    color: #333; /* Change heading color */
+}
+
+    </style>
+</head>
+<body>
+<div class="container" style="margin-left: 5px;"> <!-- Move container right by 5px -->
+    <div class="product-details">
+        <div class="product-image">
+            <img alt="{{ product.name }}" src="{{ product.image.url }}">
+        </div>
+        <div class="product-info">
+            <h1>Product Name: {{ product.name }}</h1>
+            <p><b>Description: </b>{{ formatted_description | safe }}</p>
+            <p><a href="{{ product.link }}" target="_blank">{{ product.name }} Buy Link</a></p>
+
+        </div>
+    </div>
+    {% if product.productplatform_set.all %}
+    <div class="platforms">
+         <h2 class="text-center"></h2>
+        {% for platform_product in product.productplatform_set.all|dictsort:"price" %}
+        <div class="platform-product">
+            <div class="platform-image">
+                {% if platform_product.platform.name == "Apple" %}
+                <img alt="{{ platform_product.platform.name }}" src="{% static 'product_images/apple.jpg' %}">
+                {% elif platform_product.platform.name == "Amazon" %}
+                <img alt="{{ platform_product.platform.name }}" src="{% static 'product_images/amazon.jpg' %}">
+                {% elif platform_product.platform.name == "flipkart" %}
+                <img alt="{{ platform_product.platform.name }}" src="{% static 'product_images/flipkart.jpg' %}">
+                {% elif platform_product.platform.name == "croma" %}
+                <img alt="{{ platform_product.platform.name }}" src="{% static 'product_images/croma.jpg' %}">
+                {% endif %}
+            </div>
+            <div class="platform-details">
+                <h3>{{ platform_product.platform.name }}</h3>
+                <p>Price: {{ platform_product.price }}</p>
+                <p><a href="{{ platform_product.link }}" target="_blank">explore</a></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if last_viewed_products %}
+    <div class="prev-products">
+        <h2>Previously Viewed Products</h2>
+        {% for prev_product in last_viewed_products %}
+        <div class="prev-product">
+            <h3>{{ prev_product.name }}</h3>
+            <!-- Add more details if needed -->
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
+{% endblock %}
